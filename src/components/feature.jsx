@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShieldAlert, Zap, Lock, Terminal, Cpu, Activity, Fingerprint, Crosshair, Box } from "lucide-react";
 
@@ -36,6 +36,11 @@ const features = [
 
 export default function SecurityLab() {
   const [activeTab, setActiveTab] = useState(features[0]);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <section className="min-h-screen bg-[#020202] text-slate-200 py-20 px-6 font-mono selection:bg-orange-500/30 overflow-hidden">
@@ -188,7 +193,7 @@ export default function SecurityLab() {
                       {activeTab.logs.map((log, i) => (
                         <div key={i} className="flex gap-4 items-center">
                           <span className="text-orange-500/30 font-bold w-12">{`0${i + 1}`}</span>
-                          <span className="text-zinc-500">[{new Date().toLocaleTimeString()}]</span>
+                          <span className="text-zinc-500">[{isMounted ? new Date().toLocaleTimeString() : "00:00:00"}]</span>
                           <span className={log.includes("WARN") ? "text-orange-400 font-bold" : "text-zinc-300"}>{log}</span>
                         </div>
                       ))}
@@ -200,15 +205,6 @@ export default function SecurityLab() {
           </div>
         </div>
       </div>
-      <style jsx global>{`
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-          animation: spin-slow 8s linear infinite;
-        }
-      `}</style>
     </section>
   );
 }

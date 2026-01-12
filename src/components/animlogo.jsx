@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import anime from "animejs";
 
-export default function AnimLogo({ className = "", size = 300 }) {
+export default function AnimLogo({ className = "", size = 350 }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function AnimLogo({ className = "", size = 300 }) {
     // Scale the context so we can draw in "logical" pixels (0 to size)
     ctx.scale(dpr, dpr);
 
-    const spacing = 8;
+    const spacing = 8; // Reduced density for better performance
     const maxSize = 3.2;
     const minSize = 0.8;
     const particles = [];
@@ -30,6 +30,7 @@ export default function AnimLogo({ className = "", size = 300 }) {
     const cy = size / 2;
     const radius = size / 2 - 10;
     const pinch = radius / 4;
+    const maxParticles = 1000; // Limit total particles
 
     // --- Gemini logo path ---
     const path = new Path2D();
@@ -40,10 +41,9 @@ export default function AnimLogo({ className = "", size = 300 }) {
     path.bezierCurveTo(cx - pinch, cy, cx, cy - pinch, cx, cy - radius);
     path.closePath();
 
-    // --- Create particles ---
-    // We iterate based on the 'size' prop, which is now the logical scale
-    for (let y = 0; y < size; y += spacing) {
-      for (let x = 0; x < size; x += spacing) {
+    // --- Create particles with optimized iteration ---
+    for (let y = 0; y < size && particles.length < maxParticles; y += spacing) {
+      for (let x = 0; x < size && particles.length < maxParticles; x += spacing) {
         if (ctx.isPointInPath(path, x, y)) {
           const dist = Math.hypot(x - cx, y - cy);
           const t = Math.max(0, 1 - dist / radius);

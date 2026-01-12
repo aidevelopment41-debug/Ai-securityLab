@@ -1,10 +1,32 @@
 "use client"
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AnimLogo from './animlogo';
+
 export default function HeroBackground() {
   const canvasRef = useRef(null);
-  const requestRef = useRef(); // To track animation frame for cleanup
+  const requestRef = useRef();
+  const [logoSize, setLogoSize] = useState(350);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    
+    const updateLogoSize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setLogoSize(200);
+      } else if (width < 1024) {
+        setLogoSize(280);
+      } else {
+        setLogoSize(350);
+      }
+    };
+
+    updateLogoSize();
+    window.addEventListener('resize', updateLogoSize);
+    return () => window.removeEventListener('resize', updateLogoSize);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -15,9 +37,9 @@ export default function HeroBackground() {
     let particles = [];
     let grid = [];
     const gridSize = 12;
-    const maxPop = 150;
+    const maxPop = 80; // Reduced particle count for better performance
     const lifespan = 1500;
-    const spawnRate = 2;
+    const spawnRate = 1.2; // Reduced for better performance
     let rows, cols; // Track grid dimensions
 
     let mouse = { x: -1000, y: -1000, active: false };
@@ -54,8 +76,8 @@ export default function HeroBackground() {
     const resize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
-      xC = width / 2;
-      yC = height / 2;
+      xC = (width+50) / 2;
+      yC = (height+50) / 2;
       
       // Clear particles on resize to prevent "target undefined" errors 
       // with old indices
@@ -223,12 +245,13 @@ return (
     style={{ touchAction: "none" }}
   />
 
-  {/* Bottom-right logo */}
-   <div className="absolute inset-0 flex items-center justify-center right-10 bottom-10 z-10">
-    <AnimLogo size={400} className="text-orange-500" />
-  </div>
+  {/* Centered logo */}
+  {isMounted && (
+    <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+      <AnimLogo size={logoSize} className="text-orange-500" />
+    </div>
+  )}
 </div>
-
 );
 
 }

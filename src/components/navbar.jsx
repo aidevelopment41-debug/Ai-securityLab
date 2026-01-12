@@ -3,9 +3,10 @@
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronDown, ArrowRight, Menu, X, ShieldCheck, Lock } from "lucide-react"
+import { ChevronDown, ArrowRight, Menu, X, ShieldCheck, User, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/hooks/useAuth"
 
 const NAV_LINKS = [
   { 
@@ -30,6 +31,8 @@ export function Navbar() {
   const [index, setIndex] = useState(0)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const { user, isAuthenticated, logout } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20)
@@ -43,6 +46,11 @@ export function Navbar() {
     }, 6000)
     return () => clearInterval(timer)
   }, [])
+
+  const handleLogout = () => {
+    logout()
+    setShowUserMenu(false)
+  }
 
   return (
     <header className="fixed top-0 w-full z-50">
@@ -84,7 +92,7 @@ export function Navbar() {
           
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <div className="relative">
-              <img src="logoAIS2.svg"className="h-8 w-8 text-orange-500 transition-transform group-hover:scale-110" />
+              <img src="/logoAIS2.svg" className="h-8 w-8 text-orange-500 transition-transform group-hover:scale-110" />
               <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-full group-hover:bg-orange-500/40 transition-all" />
             </div>
             <span className="font-bold text-lg md:text-xl tracking-tighter leading-tight text-zinc-100">
@@ -109,18 +117,71 @@ export function Navbar() {
             ))}
           </div>
           <div className="flex items-center gap-4">
-            <Link 
-              href="/login" 
-              className="text-xs font-semibold text-zinc-400 hover:text-white hidden sm:flex items-center gap-2 transition-colors"
-            >
-              Login
-            </Link>
-            
-            <Link href="/demo">
-              <Button size="sm" className="hidden sm:flex bg-orange-600 hover:bg-orange-500 text-white border-none shadow-lg shadow-orange-900/20">
-               Get a Demo
-              </Button>
-            </Link>
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors rounded-lg hover:bg-white/5"
+                >
+                  <User className="w-4 h-4" />
+                  <span className="hidden sm:inline">{user?.username || 'User'}</span>
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+                
+                <AnimatePresence>
+                  {showUserMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-white/10 rounded-lg shadow-xl z-50"
+                    >
+                      <div className="p-2">
+                        <Link
+                          href="/dashboard"
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 rounded transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <ShieldCheck className="w-4 h-4" />
+                          Dashboard
+                        </Link>
+                        <Link
+                          href="/profile"
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 rounded transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <User className="w-4 h-4" />
+                          Profile
+                        </Link>
+                        <hr className="my-2 border-white/10" />
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 rounded transition-colors w-full text-left"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Logout
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <>
+                <Link 
+                  href="/login" 
+                  className="text-xs font-semibold text-zinc-400 hover:text-white hidden sm:flex items-center gap-2 transition-colors"
+                >
+                  Login
+                </Link>
+                
+                <Link href="/signup">
+                  <Button size="sm" className="hidden sm:flex bg-orange-600 hover:bg-orange-500 text-white border-none shadow-lg shadow-orange-900/20">
+                   Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
 
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
