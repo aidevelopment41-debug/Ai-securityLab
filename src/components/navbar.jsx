@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
@@ -92,7 +93,7 @@ export function Navbar() {
           
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <div className="relative">
-              <img src="/logoAIS2.svg" className="h-8 w-8 text-orange-500 transition-transform group-hover:scale-110" />
+                <Image src="/logo.png" alt="Logo" width={80} height={40} />
               <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-full group-hover:bg-orange-500/40 transition-all" />
             </div>
             <span className="font-bold text-lg md:text-xl tracking-tighter leading-tight text-zinc-100">

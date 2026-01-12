@@ -67,7 +67,7 @@ function LoginContent() {
           className="text-center mt-6"
         >
           <p className="text-gray-400">
-            Don't have an account?{' '}
+            {"Don't have an account?"}{' '}
             <Link href="/signup" className="text-orange-500 hover:text-orange-400 transition-colors">
               Sign up here
             </Link>

@@ -38,9 +38,12 @@ export default function SecurityLab() {
   const [activeTab, setActiveTab] = useState(features[0]);
   const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+useEffect(() => {
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  setIsMounted(true);
+}, []);
+
+
 
   return (
     <section className="min-h-screen bg-[#020202] text-slate-200 py-20 px-6 font-mono selection:bg-orange-500/30 overflow-hidden">
