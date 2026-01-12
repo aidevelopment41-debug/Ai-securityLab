@@ -92,10 +92,18 @@ export function Navbar() {
         <div className="flex h-16  items-center justify-between px-14">
           
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <div className="relative">
-                <Image src="/logo.png" alt="Logo" width={80} height={40} />
-              <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-full group-hover:bg-orange-500/40 transition-all" />
-            </div>
+           <div className="relative flex items-center">
+  <Image
+    src="/logoAIS2.svg"
+    alt="Logo"
+    width={32}
+    height={32}
+    className="w-8 h-8 object-contain relative z-10"
+    priority
+  />
+  <div className="absolute inset-0 bg-orange-500/20 blur-lg rounded-full z-0" />
+</div>
+
             <span className="font-bold text-lg md:text-xl tracking-tighter leading-tight text-zinc-100">
               AI SECURITY<span className="text-orange-500">.</span>
               <span className="block text-zinc-500 font-mono text-[9px] tracking-[0.3em] uppercase">Laboratory</span>
@@ -168,20 +176,16 @@ export function Navbar() {
                 </AnimatePresence>
               </div>
             ) : (
-              <>
-                <Link 
-                  href="/login" 
-                  className="text-xs font-semibold text-zinc-400 hover:text-white hidden sm:flex items-center gap-2 transition-colors"
-                >
-                  Login
-                </Link>
-                
-                <Link href="/signup">
-                  <Button size="sm" className="hidden sm:flex bg-orange-600 hover:bg-orange-500 text-white border-none shadow-lg shadow-orange-900/20">
-                   Sign Up
-                  </Button>
-                </Link>
-              </>
+             <div className="flex items-center gap-6 ml-auto">
+  <button className="text-sm text-gray-300 hover:text-white transition">
+    Login
+  </button>
+
+  <button className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-4 py-2 rounded transition">
+    Sign Up
+  </button>
+</div>
+
             )}
 
             <button
